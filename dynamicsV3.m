@@ -147,11 +147,11 @@ Cpitch = interp2(betas,alphas,Cpitchs,beta_clamp,alpha_clamp,'linear');
 Cyaw   = interp2(betas,alphas,Cyaws,beta_clamp,alpha_clamp,'linear');
 % Note: Force coefs are probably in the wind frame, converting that next
 
-% Hydrodynamic forces in wind frame
+% Hydrodynamic forces in body frame (we love sting balances)
 L = q * CL * S; % lift
 D = q * CD * S; % drag
 Y = q * CY * S; % side
-F_w = [-D; Y; -L];
+F_hydro = [-D; Y; -L];
 
 
 % Buoyancy Force -- MAK
@@ -186,12 +186,6 @@ g_b = DCM_gb *[0;0;g];
 
 % buoyancy equation 
 B = g_b * (m_total - rho * Volume) 
-
-% Wind -> body -> glide frames
-DCM_bw = dcmbody2wind(alpha*pi/180,beta*pi/180); % <3 aerospace toolbox
-DCM_wb = DCM_bw.'; % wind to body from inverse
-Fb_aero = DCM_wb * F_w; % aero force wind to body
-
 
 
 %% Moments (torques)
@@ -243,7 +237,7 @@ Omega = H \ eta_dot;
 Pp = mbat * (V_b + cross(Omega, rp));
 
 % Starting with vdot = M^-1 Fbar, see algebra in notes
-Feq = cross(M*V_b + Pp, Omega) + m0*g_b + Fb_aero;
+Feq = cross(M*V_b + Pp, Omega) + m0*g_b + F_hydro;
 veq = [M + mbat*eye(3), -mbat*rpx];
 
 % Starting with Omegadot = J^-1 Tbar, see algebra in notes
