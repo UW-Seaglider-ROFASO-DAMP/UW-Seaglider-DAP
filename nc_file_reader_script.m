@@ -8,45 +8,63 @@
 % raw_data > nc_files
 
 %% Clear
-clear
-clc
+clear; clc
 
-%% Toggle Excel Export
-runExcelExport = true; % set to true to enable, otherwise false to disable
+%% Toggle Variable Export (USER EDIT)
+% Lowest one set to true will be runned, cannot run simultaneously.
 
-%% NetCDF OVERVIEW EXAMPLE GUIDE (can delete if preferred)
-% Imports example netCDF File for viewer
-example_read = 'p1950001example.nc';
-example_ncinfo = ncinfo(example_read); % View struct files
+export_SelectedVars = true; % reads data from selected variables
 
-% IMPORTANT: Double Click
-% Workspace > example_ncinfo > variables > copy & paste name
-example_var = ncread(example_read,'time'); % Reads selected variable from dataset
+export_EngVars = false; % reads data from eng files
+
+export_gcVars = false; % reads data from log files
+
+export_allVars = false; % reads data from all variables
+
+%% Toggle Excel Export (USER EDIT)
+
+runExcelExport = true;
+
+runCSVExport = false;
+
+%% Directory
+% Prompt for folder first
+folder = uigetdir;
+files = dir(fullfile(folder, '*.nc'));
+sampleFile = fullfile(files(1).folder, files(1).name);
+info = ncinfo(sampleFile);
+if isempty(files)
+    error('No .nc files found in selected folder');
+end
+
+allVars = {info.Variables.Name};
 
 %% Variable Selector (USER EDIT THIS)
 % Edit List for selected variables to read
-vars = {'time',...
-    'eng_elaps_t',...
-    'gc_pitch_ctl',...
-    'gc_pitch_volts',...
-    'gc_pitch_i',...
-    'depth'};
+if export_SelectedVars
+    vars = {'log_C_PITCH',...
+        'eng_pitchCtl'};
+end
+
+%% Variable Selector (AUTO from NetCDF)
+
+if export_EngVars   
+    % Select only variables starting with 'eng'
+    vars = allVars(startsWith(allVars, 'eng'));
+end
+
+if export_gcVars   
+    % Select only variables starting with 'gc'
+    vars = allVars(startsWith(allVars, 'gc'));
+end
+
+if export_allVars
+    vars = {info.Variables.Name};  % all variable names
+end
 
 %% nc_file_reader function (USER EDIT THIS)
-% FOR read_nc_folder function
-% allData = read_nc_folder(folder, varNames, maxFiles, startIndex)
-%
-% Inputs:
-%   folder     - path to folder containing .nc files ([] to select manually)
-%   varNames   - cell array of variable names
-%   maxFiles   - (optional) maximum number of files to read
-%   startIndex - (optional) file index to start from (default = 1)
-%
-% Output:
-%   allData - cell array of structs (one per file)
-% [] is empty
 
-data = nc_file_reader([],vars,[],[]);  % will prompt folder
+data = nc_file_reader_function(folder,vars,[],[]);  % will prompt folder
 
 %% Excel Import
 if runExcelExport
@@ -83,10 +101,66 @@ if runExcelExport
         % Info to show once
         info = {'Filename', S.filename; 'Folder', S.folder};
     
+        % Additional information if needed, commented out for now
         % Write file/folder info at top
-        writecell(info, Excel_Sheet_Title, 'Sheet', ['File_', num2str(k)], 'Range', 'A1');
+        % writecell(info, Excel_Sheet_Title, 'Sheet', ['File_', num2str(k)], 'Range', 'A1');
+        % If uncommented, change write table to write 'A3' below
     
-        % Write table starting from row 3
-        writetable(tblData, Excel_Sheet_Title, 'Sheet', ['File_', num2str(k)], 'Range', 'A3', 'WriteRowNames', false);
+        % Write table
+        writetable(tblData, Excel_Sheet_Title, 'Sheet', ['File_', num2str(k)], 'Range', 'A1', 'WriteRowNames', false);
+    end
+end
+
+%% CSV Export with base filename
+if runCSVExport
+    % Ask user for folder and base filename
+    folderPath = uigetdir([], 'Select folder to save CSV files');
+    if isequal(folderPath,0)
+        disp('User canceled CSV export.');
+    else
+        prompt = {'Enter base filename (no extension):'};
+        dlgtitle = 'Base CSV Filename';
+        dims = [1 50];
+        definput = {'MyData'};
+        answer = inputdlg(prompt, dlgtitle, dims, definput);
+        if isempty(answer)
+            disp('User canceled base filename input.');
+        else
+            baseName = answer{1};
+
+            for k = 1:length(data)
+                S = data{k};
+
+                % Generate sequential filename
+                csvFileName = fullfile(folderPath, sprintf('%s_%d.csv', baseName, k));
+
+                % Find max length among variables
+                maxLen = 0;
+                for v = 1:length(vars)
+                    varName = vars{v};
+                    if isfield(S, varName)
+                        maxLen = max(maxLen, length(S.(varName)));
+                    end
+                end
+
+                % Build table with padded columns
+                tblData = table();
+                for v = 1:length(vars)
+                    varName = vars{v};
+                    if isfield(S, varName)
+                        col = S.(varName);
+                        if length(col) < maxLen
+                            col(end+1:maxLen,1) = NaN;  % pad with NaN
+                        end
+                        tblData.(varName) = col;
+                    else
+                        tblData.(varName) = NaN(maxLen,1);
+                    end
+                end
+
+                % Write CSV
+                writetable(tblData, csvFileName, 'WriteRowNames', false);
+            end
+        end
     end
 end
