@@ -33,11 +33,11 @@ y = X(11); % y distance in Glide Path frame
 z = X(12); % z distance (depth) in Glide Path frame
 
 % Unpacking control input
-x_bat = U(1); % battery pos down x axis (in body frame)
+pitch_ctl = U(1); % battery pos down x axis (in body frame, aft positive)
 phi_bat = U(2); % battery roll angle
 VBD_ctlAD = U(3); % oil count in the VBD pump in AD
 
-
+x_bat = - pitch_ctl;
 
 % Unpacking parameters
 
