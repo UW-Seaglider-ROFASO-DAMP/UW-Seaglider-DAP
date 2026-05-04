@@ -1,0 +1,325 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage{cite} 
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{tcolorbox}
+\usepackage{hyperref} 
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{float} 
+\usepackage{sectsty}
+% Custom box for formulas
+\newtcolorbox{formulabox}[1]{colback=blue!5!white,colframe=blue!75!black,title=#1}
+\newtcolorbox{conceptbox}[1]{colback=red!5!white,colframe=red!75!black,title=#1}
+%
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textbf{Field Test Procedure}}
+\fancyhead[R]{Doc ID: TP-001 \quad Version: 1.7}
+\fancyfoot[C]{Page \thepage}
+
+\newcommand{\gam}{\gamma}
+\newcommand{\GammaFn}{\Gamma}
+
+\newcolumntype{I}{p{2cm}}   % ID & Requirement
+\newcolumntype{S}{p{5cm}}   % Steps
+\newcolumntype{E}{p{4.5cm}} % Expected Result
+\newcolumntype{A}{p{3.5cm}} % Actual Result / Notes
+\newcolumntype{P}{p{1cm}}   % Pass/Fail
+\begin{document}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thesubsection}{\roman{subsection}}
+\renewcommand{\thesubsubsection}{\arabic{subsubsection}}
+
+%Section/subsection font and centering
+%\sectionfont{\centering\fontsize{12pt}{1em}\selectfont}
+%\subsectionfont{\centering\fontsize{11pt}{1em}\selectfont}
+%\renewcommand{\thesubsection}{\Roman{section}.\Alph{subsection}.}
+%\subsubsectionfont{\fontsize{11pt}{1em}\selectfont}
+%\renewcommand{\thesubsubsection}{}
+%
+%Title
+\title{\textbf{Field Test Procedure}}
+\date{16MAR26}
+\maketitle
+%Title page/ version history
+\section*{Document Information}
+
+\vspace{1cm}
+%table
+\begin{tabular}{|p{4cm}|p{12cm}|}
+\hline
+\textbf{Document Title}  & Field Test Procedure \\ \hline
+\textbf{Document ID}     & TP-001 \\ \hline
+\textbf{Version}         & 1.7 \\ \hline
+\textbf{Author(s)}       & OP, GR, MS, HK \\ \hline
+\textbf{Approver(s)}     & *Whomever* \\ \hline
+\textbf{Date}            & 16MAR26 \\ \hline
+\end{tabular}
+
+\vspace{1cm}
+%table
+\subsection*{Revision}
+\begin{tabular}{|p{2cm}|p{3cm}|p{4cm}|p{6cm}|}
+\hline
+\textbf{Version} & \textbf{Date} & \textbf{Author} & \textbf{Description of Changes} \\ \hline
+1.0 & 27FEB26 & OP & Initial Draft  \\ \hline
+ 1.1& 28FEB26 & OP & Adjustments to Format/Test Procedure\\ \hline
+ 1.2 & 01MAR26 & GR & Modified the procedure to include mass measurements \\ \hline
+ 1.3 & 03MAR26 & MS, HK & Adding damage modes and sweeps \\ \hline
+  1.4 & 03MAR26 & HK & Changing to Field Test: altering procedure and maneuvers to reflect field test \\ \hline
+  1.5 & 13MAR26 & MS & Changed "and or" to and/or, page 6 test procedure 6. \\ \hline
+  1.6 & 13MAR26 & OP & Changed title \\ \hline 
+   1.7 & 16MAR26 & HK & Updated Dive Set and Fault Cases \\ \hline 
+\end{tabular}
+
+\newpage
+%table of contents
+\tableofcontents
+\newpage
+%Why the heck are we doing this 
+\section{Motivation}
+%In order to familiarize the AA Ocean Capstone team with Seaglider piloting and data output, a tank test will be carried out. This will allow the capstone team to determine how to best design their digital twin deliverable to intake the Seaglider outputs.
+
+Field testing will confirm the digital twin's data outputs, as well as determine the percent effect of variable wing and rudder damage on those data outputs. This will both finalize critical system and functional requirement requirement data needs, as well as begin the characterization of wing and rudder damage in the fault database.
+%how far are we going
+\section{Scope} %Holland pls double check this
+The intention is for this test to occur in the first week of UW Spring Quarter 2026, date and time to be finalized at the UW Student Seaglider Center's (SSC) discretion. It is intended to integrate with SSC operations and minimize the impact on SSC scheduling. As such, the field test will resemble their normal operational procedures with the only addition being the enacted wing and rudder fault cases.
+
+
+%what is the testing enviornment like/safety
+\section{Test Environment/Safety/}%not sure what to call this
+\subsection{Test Environment}
+The field test will occur through deploying the Seaglider off the boat's launch cradle and into the open Puget Sound, where the Seaglider will dive as it would during a normal operation. Up until deployment, all procedures, precautions, and scheduling will be under the jurisdiction of the SSC.  
+\subsection{Safety}
+Due to the nature of open ocean boat travel and Seaglider mission deployment, any capstone member selected to overview the field test must acquire the proper training under the SSC's discretion. All UW School of Oceanography and SSC instructions will be followed in order to prevent risk of injury or death. 
+%unimaginably based, always wear your PFD!
+
+
+
+%who does hwat
+\section{Roles and Responsibilities}
+
+While the following roles are required to operate the test efficiently, personnel constraints will limit the amount of these roles that will be on the boat for deployment. The rest of the testing personel shall attend to the pilots and observe the test remotely from the mission control center.
+\begin{enumerate}
+
+    \item \makebox[.5in]{\hrulefill} \textbf{Field Overseer:} Oversees and assists with the field test to ensure proper following of testing procedures, as well as provide a first hand account of the field test. This is the only personnel 100\% required to be on the boat for the test to be carried out.
+    
+    \item \makebox[.5in]{\hrulefill} \textbf{Videographer:} Collects photographic and video data for later analysis using camera of choice. This role can be carried out by the field overseer for the boat operation, as well as an individual assigned to mission control for the piloting portion. 
+    
+    \item \makebox[.5in]{\hrulefill} \textbf{Test Lead:} Coordinates with SSC and organizes Capstone members. This role has no locational requirement.
+    
+    \item \makebox[.5in]{\hrulefill} \textbf{Data Lead:} Collects Seaglider data from SSC team for analysis. This role will be filled by an individual at mission control. 
+    
+    \item \makebox[.5in]{\hrulefill} \textbf{Test Members:} Any Capstone members assisting with or observing test
+    
+\end{enumerate}
+
+\newpage
+%how we do it
+\section{Test Procedure}
+\subsection{Equipment}
+\begin{itemize}[label=$\square$]
+    \item Laptop 
+    \item Camera
+    \item Data Recording Device (laptop/USB Drive)
+    \item Note Taking Device
+    \item Scale
+    \item Closed Toe Shoes (for crush hazards)
+    \item Hardhats *as required*
+    \item Life vests *as required*
+    \item SSC chosen wing/rudder cutting equipment *as required*
+    \item Appropriate breathing equipment for chosen cutting method *as required*
+    %where is my hacksaw 
+\end{itemize}
+
+\subsection{Seaglider Control Limits}
+
+\begin{table} [h!]
+    \centering
+    \begin{tabular}{|c|c|c|c|} \hline
+         Sweep &  Max & Min & Center\\ \hline
+       Pitch  & 3.3 cm (aft) & -8.3 cm (fwd)  & 2850 (AD) \\ \hline
+          Roll&  $50^\circ$ (stbd) & $-50^\circ$ (port)  & 1991 (AD) \\ \hline
+       VBD  & 548.2 (cc) & -300.5 (cc) & 2735 \\ \hline
+    \end{tabular}
+    \caption{Min, Max, and Center position for SG 195 }
+    \label{tab:placeholder1}
+\end{table}
+
+\subsection{Test Scenarios and Damage Modes}
+
+\subsubsection{\textbf{Nominal (No Damage Modes/Fault Cases)}}
+\begin{enumerate}
+\item $100\%$ of wing and rudder attached
+ 
+\end{enumerate}
+
+\subsubsection{\textbf{Off Nominal (Damage Modes/Fault Cases)}}
+
+\begin{enumerate}
+    \item $50.0\%$ of port side wing span remaining 
+    \item $0\%$ of top rudder span remaining 
+\end{enumerate}
+
+
+
+\subsubsection{\textbf{Test Dives}} All nominal and off nominal cases will perform this test dive procedure. The dive is to reflect a typical Seaglider operational dive set.
+
+
+\begin{enumerate}
+    \item Dive 1: 120 meter dive depth
+    \item Dive 2: 120 meter dive depth
+\end{enumerate}
+
+All other dive input parameters are determined by the pilot in order to represent a typical Seaglider mission given these depths. For each dive, the mission parameters and inputs are to be recorded, tabulated, and kept consistent for each fault case undergoing this dive set. These dive depths can be changed upon SSC piloting discretion or recommendations.
+
+
+
+
+
+
+
+
+\subsection{Procedure} %this is a small detail but i think we should have more spacing between the steps and maybe add more room for data??? -ms
+\begin{enumerate}
+   
+    
+    \item \makebox[.5in]{\hrulefill} Ensure pre-test mass measurements are recorded, as requested by capstone Kinematics and Dynamics team:
+     \begin{table} [h!]
+        \centering
+         \renewcommand{\arraystretch}{2.2}
+        \begin{tabular}{|p{2cm}|p{2cm}|} \hline
+        Mass of Seaglider (kg)  &   \\ \hline
+        \end{tabular} 
+        \label{tab:placeholder}
+    \end{table}
+    \item \makebox[.5in]{\hrulefill} Using the scale weigh the Seaglider control surfaces and record their masses.
+
+    \begin{table} [h!]
+        \centering
+         \renewcommand{\arraystretch}{2.2}
+        \begin{tabular}{|c|c|} \hline
+        Control Surface  & Mass (kg) \\ \hline
+        Wing 1 & \\ \hline
+        Wing 2 & \\ \hline
+        Rudders & \\ \hline
+        \end{tabular} 
+        \label{tab:placeholder}
+    \end{table}
+
+    
+    \item \makebox[.5in]{\hrulefill} Install rudders and wings according to the standard configuration of the Seaglider
+    \item \makebox[.5in]{\hrulefill} Using the scale, weigh the Seaglider with all control surfaces attached and record the total mass
+
+    
+    \begin{table} [h!]
+        \centering
+        \renewcommand{\arraystretch}{2.2}
+        \begin{tabular}{|p{2cm}|p{2cm}|} \hline
+           Total Mass of Seaglider (kg)  &    \\ \hline
+        \end{tabular} 
+        \label{tab:placeholder}
+    \end{table}
+    \item  \makebox[.5in]{\hrulefill} Repeat steps 1-4 for each damage case if damage case wing and rudders are prepared prior to the test day. If fault specimens are created actively on the boat, continue to step 6. Confer with SSC if fault specimens can be weighed on the boat.
+    
+    \item \makebox[.5in]{\hrulefill} Confirm with SSC staff that measurements and/or measurement plans are complete.
+    \item \makebox[.5in]{\hrulefill} Follow SSC field-day schedule up until final glider assembly on the boat, where the testing procedure will begin. 
+    \item \makebox[.5in]{\hrulefill} Prepare Seaglider for full assembly once deployment point is reached and assembly is commanded.
+    \item \makebox[.5in]{\hrulefill} Attach nominal wing and rudder specimens to the Seaglider, along with all other nominal components.
+    \item \makebox[.5in]{\hrulefill} Ready nominal Seaglider on deployment cradle and await deployment instruction.
+    \item \makebox[.5in]{\hrulefill} Deploy nominal Seaglider and transfer control to pilots upon completion of SSC Field Team checks.
+    \item \makebox[.5in]{\hrulefill} Seaglider performs mission procedure as given by pilots and informed by the requested dive profile set.
+    \item \makebox[.5in]{\hrulefill} Perform SSC retrieval procedure and disassemble nominal wing and rudder glider specimens. 
+    \item \makebox[.5in]{\hrulefill} Repeat steps 9-13 for all damage modes, attaching pre-made fight surface specimens, or creating fault specimens on site under SSC discretion.
+    \item \makebox[.5in]{\hrulefill} Follow SSC return procedure once final fault case, dive, and retrieval has concluded.
+    \item \makebox[.5in]{\hrulefill} Ensure all dive data has been collected and appropriate for the transfer from the SSC science team to the capstone team.
+    \item \makebox[.5in]{\hrulefill} Assist SSC or Pilot Staff with clean-up as requested for field and piloting operations
+    \item \makebox[.5in]{\hrulefill} Ensure all Capstone equipment is stowed and secured
+    \item \makebox[.5in]{\hrulefill} Exit field and mission control premises and upload data
+
+    
+\end{enumerate}
+\subsection{Expected Results}
+It is expected that the Seaglider will perform rolls, pitches, and buoyancy maneuvers differently with damaged surfaces than without. The damage cases are expected to cause higher rates of oscillatory roll and pitch maneuvers in the given test sections. Other expected observations in damage cases include abnormal data changes from Seaglier orientation disturbances in otherwise unaffected data sets. Examples of this include only buoyancy data changing in a nominal buoyancy maneuver, but both buoyancy and roll data change in an off-nominal buoyancy maneuver. What data is affected and the exact percentage difference is to be determined for each fault individually from it's collected data file.
+
+
+
+
+\subsection{Actual Results}
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.2}
+
+\resizebox{\textwidth}{!}{
+\begin{tabular}{|p{2.2cm}|l|p{3.2cm}|p{3.2cm}|l|l|}
+\hline
+\textbf{Affected Item} & \textbf{\% Control Surface Span Remaining} & \textbf{Mass (kg)} & \textbf{Expected Results} & \textbf{Notes} & \textbf{P/F} \\ \hline
+
+Port Side Wing / Top Rudder & 100\% Remaining - Nominal  &
+ &
+Data and video of acceptable quality and test cleared for simulating damage. &
+&
+$\square$ P \newline $\square$ F \\ \hline
+
+Port Side Wing & 50\% Remaining - Off Nominal &
+ &
+Maneuvers cause detectable orientation shift. &
+&
+$\square$ P \newline $\square$ F \\ \hline
+
+Top Rudder & 0\% Remaining - Off Nominal &
+ &
+Maneuvers cause detectable orientation shift. &
+&
+$\square$ P \newline $\square$ F \\ \hline
+
+\end{tabular}
+}
+
+\end{table}
+
+%what counts as a success
+
+\section{Acceptance Criteria}
+\begin{enumerate}
+    \item (Yes/No) Data collected showed noticeable difference in nominal/off-nominal conditions
+    \item (Yes/No) Video post-analysis confirms data collected
+    \item (Yes/No) Test was concluded safely 
+    \item (Yes/No) SSC pilots are capable of reproducing maneuvers from test in real-world scenarios
+\end{enumerate}
+
+%sign off
+\section{Test Acceptance}
+
+By signing below, the UW AA Ocean Capstone Test Lead and Approver confirm that the test procedure was executed in the designated enviornent 
+
+\vspace{1.5cm}
+\noindent
+\begin{tabular}{ll}
+\makebox[2.5in]{\hrulefill} & \makebox[2.5in]{\hrulefill}\\
+\textbf{Test Lead Signature \& Date} & \textbf{Approver Signature \& Date}\\[8ex]
+\end{tabular}
+\newpage
+%what we do
+
+\section{Appendix}
+\subsection{Test Data}
+\subsection{Glossary}
+\subsection{Reference}
+
+
+
+
+
+\end{document}
