@@ -63,7 +63,7 @@ Js = params.Js; % 3x3 stationary mass inertia matrix
 ms = params.Ms; % stationary mass
 
 Kappa = 5.529e-06 % compressibility factor, number from Dr. Charlie Erikson Paper-- MAK
-Tau = 7.05e-05 % Volumetric expansion, number from Dr. Charlie Erikson Paper -- MAK 
+tau = 7.05e-05 % Volumetric expansion, number from Dr. Charlie Erikson Paper -- MAK 
 % PAPER: Assessing Seaglider Model-Based Position Accuracy on an Acoustic Tracking Range
 
 % Ocean properties
@@ -237,7 +237,8 @@ Omega = H \ eta_dot;
 Pp = mbat * (V_b + cross(Omega, rp));
 
 % Starting with vdot = M^-1 Fbar, see algebra in notes
-Feq = cross(M*V_b + Pp, Omega) + m0*g_b + F_hydro;
+% Feq = cross(M*V_b + Pp, Omega) + m0*g_b + F_hydro;
+Feq = cross(M*V_b + Pp, Omega) + B + F_hydro;
 veq = [M + mbat*eye(3), -mbat*rpx];
 
 % Starting with Omegadot = J^-1 Tbar, see algebra in notes
