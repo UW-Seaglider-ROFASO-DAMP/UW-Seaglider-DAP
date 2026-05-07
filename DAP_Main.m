@@ -27,13 +27,19 @@ clc
 %% Log file unpacking
 % This section unpacks the log file into a matrix
 
-Log_Matrix = Log_File_Unpacker('p1950004.log'); % USER INPUT - insert name of log file into the ('');   Example - ('p1950001.log') 
+[logFileName, logFilePath] = uigetfile('*.log', 'Select the LOG file');
+[ncFileName, ncFilePath] = uigetfile('*.nc', 'Select the NC file');
 
+% Full path to selected LOG file
+logFullFile = fullfile(logFilePath, logFileName);
 
-%% ENG file unpacking
-% This section unpacks the eng file into a matrix
+% Full path to selected NC file
+ncFullFile = fullfile(ncFilePath, ncFileName);
 
-Eng_Matrix = Eng_File_Unpacker('p1950004.eng'); % USER INPUT - insert name of eng file into the ('');   Example - ('p1950001.eng') 
+% Unpack LOG file
+Log_Matrix = Log_File_Unpacker(logFullFile);
+
+NC_Matrix = NC_File_Unpacker(ncFullFile); % USER INPUT - insert name of eng file into the ('');   Example - ('p1950001.eng') 
 
 
 %% Dynamics
