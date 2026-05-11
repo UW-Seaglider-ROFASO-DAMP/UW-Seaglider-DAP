@@ -51,7 +51,9 @@ b = params.b; % wing span
 
 % Glider properties
 % Battery
-rpbat = params.rpbat; % distance from x axis to cg of battery (in YZ plane)
+VCB = -0.00362; % Vertical CB location relative to neutral axis, in m
+VCG_bat = -0.01082; % Battery vertical cg location relative to neutral axis, in m
+rpbat = sqrt( VCB^2 + VCG_bat^2 - 2 * VCG * VCBbat * cosd(phi_bat) ); % distance from cb to cg of battery (in YZ plane)
 mbat = params.mbat; % battery pack mass
 
 % Whole glider
