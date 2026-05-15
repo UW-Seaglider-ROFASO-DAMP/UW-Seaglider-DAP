@@ -154,6 +154,7 @@ F_hydro = [-D; Y; -L];
 % Total displaced volume & mass
 VBD_ctlcc = VBD_ctlAD * -0.2453;    % converting VBD_ctl from AD to cm^3, VBD_ctlAD is control input
 Vol_blad = (-VBD_ctlcc + 1426.7) * 1e-6;     % oil volume in bladder (m^3 now)
+                                             % 1426.7 is specific to 194 oil count and can change
 Vol_disp = Vol_blad + Vol_static;   % total volume displaced 
 Volume = Vol_disp * exp(-(Kappa * P - tau * (T - T0))); % -- MAK
 m_total = ms + mbat;       % total mass of the seaglider (ms will change with damage cases)
