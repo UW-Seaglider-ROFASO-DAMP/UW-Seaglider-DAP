@@ -22,6 +22,30 @@ function Diagnose = missioncompare_version_4(DT_Output, MI_Output)
 varNames_DT = string(DT_Output(1, :));   % DT variable names (row 1)
 varNames_MI = string(MI_Output(1, :));   % MI variable names (row 1)
 
+%% 1.1 Extract time vectors (needed before normalization)
+time_DT = cell2mat(DT_Output(2:end, 1));
+time_MI = cell2mat(MI_Output(2:end, 1));
+
+%% 1.2 Normalize DT and MI to the same time length
+len_DT = length(time_DT);
+len_MI = length(time_MI);
+minLen = min(len_DT, len_MI);
+
+% Trim time vectors
+time_DT = time_DT(1:minLen);
+time_MI = time_MI(1:minLen);
+
+% Trim the entire DT_Output and MI_Output matrices (keep header row)
+DT_Output = DT_Output([1, 2:minLen+1], :);
+MI_Output = MI_Output([1, 2:minLen+1], :);
+
+% fprintf('\n=== TIME LENGTH NORMALIZATION ===\n');
+% fprintf('DT length: %d samples\n', len_DT);
+% fprintf('MI length: %d samples\n', len_MI);
+% fprintf('Shortest length: %d samples\n', minLen);
+% fprintf('Both datasets trimmed to %d samples.\n', minLen);
+% fprintf('---------------------------------------------\n');
+
 %% 2. Basic consistency checks: same number of columns and same variable names
 if size(DT_Output, 2) ~= size(MI_Output, 2)
     % If the number of columns (variables) differ, abort with an error
@@ -144,7 +168,38 @@ for i = 2:length(varNames_DT)
     DT_trim = DT_clean(trimMask);   % trimmed DT data
     MI_trim = MI_clean(trimMask);   % trimmed MI data
     t_trim  = t_clean(trimMask);    % trimmed time
-   
+
+    % % 9.X TRIMMING VERIFICATION (TIMESTAMPS)
+    % % Prove that trimming removed the first and last 20% of the mission.
+    % % We print:
+    % %   - RAW time range (before zero removal)
+    % %   - CLEAN time range (after zero removal)
+    % %   - TRIMMED time range (middle 60%)
+    % 
+    % % RAW time range (from original DT_raw and time vector)
+    % raw_time_start = time(find(validMask,1,'first'));
+    % raw_time_end   = time(find(validMask,1,'last'));
+    % 
+    % % CLEAN time range (after zero removal)
+    % clean_time_start = t_clean(1);
+    % clean_time_end   = t_clean(end);
+    % 
+    % % TRIMMED time range (after removing first/last 20%)
+    % trim_time_start = t_trim(1);
+    % trim_time_end   = t_trim(end);
+    % 
+    % fprintf('\n=== TRIMMING CHECK: %s ===\n', varNameChar);
+    % fprintf('RAW time range:    %.3f  -->  %.3f sec\n', raw_time_start, raw_time_end);
+    % fprintf('CLEAN time range:  %.3f  -->  %.3f sec\n', clean_time_start, clean_time_end);
+    % fprintf('TRIMMED (60%%):     %.3f  -->  %.3f sec\n', trim_time_start, trim_time_end);
+    % 
+    % % Expected trimming boundaries
+    % expected_start = t0 + 0.2*T;
+    % expected_end   = t0 + 0.8*T;
+    % 
+    % fprintf('Expected trim:     %.3f  -->  %.3f sec\n', expected_start, expected_end);
+    % fprintf('---------------------------------------------\n');
+
 
     % If trimming removed everything, record NaNs/empty and skip
     if isempty(DT_trim) || isempty(MI_trim)
